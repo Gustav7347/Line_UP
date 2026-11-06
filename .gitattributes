@@ -1,0 +1,56 @@
+# Normalize text in the repository; use Windows line endings for VS/C++ files.
+* text=auto eol=lf
+
+*.c text eol=crlf
+*.cc text eol=crlf
+*.cpp text eol=crlf
+*.cxx text eol=crlf
+*.h text eol=crlf
+*.hh text eol=crlf
+*.hpp text eol=crlf
+*.hxx text eol=crlf
+*.sln text eol=crlf
+*.slnx text eol=crlf
+*.vcxproj text eol=crlf
+*.filters text eol=crlf
+*.props text eol=crlf
+*.targets text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shaders are text.
+*.glsl text eol=lf
+*.vert text eol=lf
+*.frag text eol=lf
+*.geom text eol=lf
+*.tesc text eol=lf
+*.tese text eol=lf
+*.comp text eol=lf
+
+# Binary assets and libraries must not undergo line-ending conversion.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.bmp binary
+*.tga binary
+*.dds binary
+*.ico binary
+*.gif binary
+*.hdr binary
+*.exr binary
+*.fbx binary
+*.blend binary
+*.glb binary
+*.ttf binary
+*.otf binary
+*.wav binary
+*.mp3 binary
+*.ogg binary
+*.mp4 binary
+*.pdf binary
+*.zip binary
+*.7z binary
+*.dll binary
+*.lib binary
+*.a binary
+*.so binary
