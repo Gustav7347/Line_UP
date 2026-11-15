@@ -2,6 +2,7 @@
 #include "airplane.h"
 #include "camera.h"
 #include "viewport.h"
+#include "title.h"
 
 #include <iostream>
 #include <fstream>
@@ -116,6 +117,12 @@ void InitAxis() {
 // 키 입력
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (action != GLFW_PRESS && action != GLFW_REPEAT) return;
+
+    // 타이틀 화면일 때는 타이틀이 키를 처리 (Enter: 시작, Q: 종료)
+    if (IsTitleActive()) {
+        if (action == GLFW_PRESS) TitleHandleKey(window, key);
+        return;
+    }
 
     switch (key) {
     case GLFW_KEY_Q: glfwSetWindowShouldClose(window, GLFW_TRUE); break;

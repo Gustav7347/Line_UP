@@ -77,6 +77,15 @@
     <Filter Include="viewport\소스 파일">
       <UniqueIdentifier>{21a4519b-249d-4757-aab8-169b6edacc63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="title">
+      <UniqueIdentifier>{a3d9b3a4-b37b-450a-b78d-28a938aeb63d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="title\헤더 파일">
+      <UniqueIdentifier>{a13d3e40-66a8-4161-a4af-b4a93f23724b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="title\소스 파일">
+      <UniqueIdentifier>{32493e4b-b96c-462f-87bb-d46f306d4ce3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="airplane\airplane.cpp">
@@ -104,6 +113,9 @@
     <ClCompile Include="viewport\viewport.cpp">
       <Filter>viewport\소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="title\title.cpp">
+      <Filter>title\소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="airplane\airplane.h">
@@ -130,5 +142,9 @@
     <ClInclude Include="viewport\viewport.h">
       <Filter>viewport\헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="title\title.h">
+      <Filter>title\헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="title\stb_image.h" />
   </ItemGroup>
 </Project>

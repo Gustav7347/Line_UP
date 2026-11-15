@@ -3,6 +3,7 @@
 
 #include "render.h"
 #include "airplane.h"
+#include "title.h"
 
 int main() {
     if (!glfwInit()) return -1;
@@ -29,10 +30,12 @@ int main() {
     InitShader();
     InitAirplane();
     InitAxis();
+    InitTitle(); // 타이틀 이미지 로드
     glfwSetKeyCallback(window, key_callback);
 
     while (!glfwWindowShouldClose(window)) {
-        DrawScene();
+        if (IsTitleActive()) DrawTitle(); // Enter 누르기 전: 타이틀 화면
+        else DrawScene();                 // Enter 누른 후: 게임 화면
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
