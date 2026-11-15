@@ -1,5 +1,7 @@
 #include "render.h"
 #include "airplane.h"
+#include "camera.h"
+#include "viewport.h"
 
 #include <iostream>
 #include <fstream>
@@ -18,10 +20,7 @@ static int axisVertexCount = 0;
 // 좌표축 길이 (원점에서 양쪽으로)
 static const float AXIS_LEN = 5.0f;
 
-// --- 카메라 조작 변수 ---
-static bool  isPerspective = true;  // P: 원근/직각 투영 전환
-static float cameraAngleY = 45.0f;  // ←/→: 카메라 Y축 회전
-static float cameraRadius = 8.0f;   // +/-: 줌 인/아웃
+// 카메라 관련 변수/계산은 camera.cpp로 이동
 
 // 셰이더
 static std::string filetobuf(const char* file) {
@@ -120,54 +119,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     switch (key) {
     case GLFW_KEY_Q: glfwSetWindowShouldClose(window, GLFW_TRUE); break;
-    case GLFW_KEY_P: isPerspective = !isPerspective; break;
-    case GLFW_KEY_R:
-        isPerspective = true;
-        cameraAngleY = 45.0f;
-        cameraRadius = 8.0f;
-        break;
-    case GLFW_KEY_EQUAL:
-        cameraRadius -= 0.5f;
-        if (cameraRadius < 2.0f) cameraRadius = 2.0f;
-        break;
-    case GLFW_KEY_MINUS:
-        cameraRadius += 0.5f;
-        if (cameraRadius > 30.0f) cameraRadius = 30.0f;
-        break;
-    case GLFW_KEY_LEFT:  cameraAngleY -= 3.0f; break;
-    case GLFW_KEY_RIGHT: cameraAngleY += 3.0f; break;
+    default: CameraHandleKey(key); break; // V, P, R, +/-, ←/→ 는 camera.cpp에서 처리
     }
 }
 
 // 장면 그리기
-void DrawScene() {
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(0.5f, 0.7f, 0.9f, 1.0f); // 하늘색 배경
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glUseProgram(shaderProgramID);
-    GLuint transformLoc = glGetUniformLocation(shaderProgramID, "transform");
-
-    // --- 카메라: 원점을 바라보며 Y축 기준으로 공전 ---
-    float radY = glm::radians(cameraAngleY);
-    float pitch = glm::radians(30.0f);
-    glm::vec3 cameraPos = glm::vec3(
-        cameraRadius * sin(radY) * cos(pitch),
-        cameraRadius * sin(pitch),
-        cameraRadius * cos(radY) * cos(pitch));
-    glm::mat4 view = glm::lookAt(cameraPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-    glm::mat4 projection;
-    if (isPerspective) {
-        projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-    }
-    else {
-        float s = cameraRadius * 0.4f;
-        projection = glm::ortho(-s, s, -s, s, 0.1f, 100.0f);
-    }
-
-    glm::mat4 viewProj = projection * view;
-
+// 좌표축 + 비행기를 주어진 카메라로 그림
+void DrawWorld(const glm::mat4& viewProj, GLuint transformLoc) {
     // --- 좌표축 (모델 변환 없음) ---
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(viewProj));
     glBindVertexArray(axisVAO);
@@ -175,4 +134,30 @@ void DrawScene() {
 
     // --- 비행기(직육면체) ---
     DrawAirplane(viewProj, transformLoc);
+}
+
+void DrawScene() {
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(SKY_R, SKY_G, SKY_B, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glUseProgram(shaderProgramID);
+    GLuint transformLoc = glGetUniformLocation(shaderProgramID, "transform");
+
+    // --- 메인 화면: 비행기 위치/방향 기준으로 1인칭 또는 3인칭 (V키로 전환) ---
+    int width, height;
+    glfwGetFramebufferSize(glfwGetCurrentContext(), &width, &height);
+    if (width <= 0 || height <= 0) return; // 최소화 상태
+    float aspect = (float)width / (float)height;
+    glViewport(0, 0, width, height);
+
+    glm::mat4 viewProj = GetProjectionMatrix(aspect) * GetViewMatrix();
+    DrawWorld(viewProj, transformLoc);
+
+    // --- 1인칭일 때만: 오른쪽 아래 미니 뷰포트에 3인칭 시점 (viewport.cpp) ---
+    if (GetViewMode() == ViewMode::FirstPerson)
+        DrawThirdPersonViewport(width, height, transformLoc);
+
+    // --- 항상: 오른쪽 위 원형 미니맵 (viewport.cpp) ---
+    DrawMinimap(width, height, transformLoc);
 }

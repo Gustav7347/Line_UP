@@ -59,6 +59,24 @@
     <Filter Include="render\소스 파일">
       <UniqueIdentifier>{93bfa4a5-9237-4eae-9639-83a4840d7452}</UniqueIdentifier>
     </Filter>
+    <Filter Include="camera">
+      <UniqueIdentifier>{91eb9eb8-ecc8-43d7-a40f-91fb20112c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="camera\헤더 파일">
+      <UniqueIdentifier>{756fce88-5e11-40f0-af99-fda799d5ff69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="camera\소스 파일">
+      <UniqueIdentifier>{74ceb7f6-3207-41e9-ac26-29e8b7c4cd1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="viewport">
+      <UniqueIdentifier>{8540471e-9e32-47bb-bfcc-537885cfd839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="viewport\헤더 파일">
+      <UniqueIdentifier>{2b079231-6956-42e7-bb1c-38b28e25b381}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="viewport\소스 파일">
+      <UniqueIdentifier>{21a4519b-249d-4757-aab8-169b6edacc63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="airplane\airplane.cpp">
@@ -80,6 +98,12 @@
     <ClCompile Include="render\render.cpp">
       <Filter>render\소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="camera\camera.cpp">
+      <Filter>camera\소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="viewport\viewport.cpp">
+      <Filter>viewport\소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="airplane\airplane.h">
@@ -99,6 +123,12 @@
     </ClInclude>
     <ClInclude Include="render\render.h">
       <Filter>render\헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="camera\camera.h">
+      <Filter>camera\헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="viewport\viewport.h">
+      <Filter>viewport\헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

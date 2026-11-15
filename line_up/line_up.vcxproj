@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)external\glm;$(ProjectDir)airplane;$(ProjectDir)render;$(ProjectDir)HUD;$(ProjectDir)map;$(ProjectDir)obstacle;$(ProjectDir)sound;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\glm;$(ProjectDir)airplane;$(ProjectDir)render;$(ProjectDir)HUD;$(ProjectDir)map;$(ProjectDir)obstacle;$(ProjectDir)sound;$(ProjectDir)camera;$(ProjectDir)viewport;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,7 +131,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)external\glm;$(ProjectDir)airplane;$(ProjectDir)render;$(ProjectDir)HUD;$(ProjectDir)map;$(ProjectDir)obstacle;$(ProjectDir)sound;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\glm;$(ProjectDir)airplane;$(ProjectDir)render;$(ProjectDir)HUD;$(ProjectDir)map;$(ProjectDir)obstacle;$(ProjectDir)sound;$(ProjectDir)camera;$(ProjectDir)viewport;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,20 +144,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="airplane\airplane.cpp" />
+    <ClCompile Include="camera\camera.cpp" />
     <ClCompile Include="HUD\hud.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map\map.cpp" />
     <ClCompile Include="obstacle\obstacle.cpp" />
     <ClCompile Include="render\render.cpp" />
     <ClCompile Include="sound\sound.cpp" />
+    <ClCompile Include="viewport\viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="airplane\airplane.h" />
+    <ClInclude Include="camera\camera.h" />
     <ClInclude Include="HUD\hud.h" />
     <ClInclude Include="map\map.h" />
     <ClInclude Include="obstacle\obstacle.h" />
     <ClInclude Include="render\render.h" />
     <ClInclude Include="sound\sound.h" />
+    <ClInclude Include="viewport\viewport.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
