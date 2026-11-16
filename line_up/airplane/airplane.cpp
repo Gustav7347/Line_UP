@@ -99,11 +99,24 @@ void UpdateAirplane(float deltaTime, bool ascend, bool descend,
     airplanePosition.y += (static_cast<int>(ascend) - static_cast<int>(descend)) * ALTITUDE_SPEED * deltaTime;
 
     if (engineStarted) {
-        float headingRadians = glm::radians(headingAngle);
-        airplanePosition += glm::vec3(std::sin(headingRadians), 0.0f, std::cos(headingRadians)) * FLIGHT_SPEED * deltaTime;
+        airplanePosition += GetAirplaneForward() * FLIGHT_SPEED * deltaTime;
     }
 }
 
 glm::vec3 GetAirplanePosition() {
     return airplanePosition;
+}
+
+glm::vec3 GetAirplaneForward() {
+    float headingRadians = glm::radians(headingAngle);
+    return glm::vec3(std::sin(headingRadians), 0.0f, std::cos(headingRadians));
+}
+
+glm::vec3 GetAirplaneUp() {
+    float headingRadians = glm::radians(headingAngle);
+    float rollRadians = glm::radians(rollAngle);
+    return glm::vec3(
+        -std::sin(rollRadians) * std::cos(headingRadians),
+        std::cos(rollRadians),
+        std::sin(rollRadians) * std::sin(headingRadians));
 }

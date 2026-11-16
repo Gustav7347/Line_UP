@@ -1,13 +1,9 @@
 #include "camera.h"
+#include "airplane.h"
 
 #include <iostream>
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
-
-// 비행기 기준 (지금 비행기는 원점에 고정, 앞쪽 = +Z, 위쪽 = +Y)
-static const glm::vec3 PLANE_POS = glm::vec3(0.0f, 0.0f, 0.0f);
-static const glm::vec3 PLANE_FORWARD = glm::vec3(0.0f, 0.0f, 1.0f);
-static const glm::vec3 PLANE_UP = glm::vec3(0.0f, 1.0f, 0.0f);
 
 // 이 파일 안에서만 쓰는 변수 (static)
 static ViewMode viewMode = ViewMode::ThirdPerson;
@@ -55,20 +51,27 @@ bool CameraHandleKey(int key) {
 }
 
 glm::mat4 GetViewMatrixFor(ViewMode mode) {
+    glm::vec3 planePosition = GetAirplanePosition();
+    glm::vec3 forward = GetAirplaneForward();
+
     if (mode == ViewMode::FirstPerson) {
-        // 조종석에서 비행기 앞쪽을 바라봄
-        glm::vec3 eye = PLANE_POS + COCKPIT_EYE;
-        return glm::lookAt(eye, eye + PLANE_FORWARD, PLANE_UP);
+        glm::vec3 up = GetAirplaneUp();
+        glm::vec3 right = glm::normalize(glm::cross(up, forward));
+        glm::vec3 eye = planePosition
+            + right * COCKPIT_EYE.x
+            + up * COCKPIT_EYE.y
+            + forward * COCKPIT_EYE.z;
+        return glm::lookAt(eye, eye + forward, up);
     }
 
-    // 3인칭: 비행기 뒤쪽(-Z) + 위쪽에서 비행기를 바라봄
-    float yaw = glm::radians(180.0f + orbitAngle); // 180 = 뒤쪽
     float pitch = glm::radians(ORBIT_PITCH);
-    glm::vec3 offset = glm::vec3(
-        cameraRadius * sin(yaw) * cos(pitch),
-        cameraRadius * sin(pitch),
-        cameraRadius * cos(yaw) * cos(pitch));
-    return glm::lookAt(PLANE_POS + offset, PLANE_POS, PLANE_UP);
+    float orbit = glm::radians(orbitAngle);
+    glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
+    glm::vec3 right = glm::normalize(glm::cross(worldUp, forward));
+    glm::vec3 horizontal = -forward * std::cos(orbit) - right * std::sin(orbit);
+    glm::vec3 offset = cameraRadius * (
+        horizontal * std::cos(pitch) + worldUp * std::sin(pitch));
+    return glm::lookAt(planePosition + offset, planePosition, worldUp);
 }
 
 glm::mat4 GetProjectionMatrixFor(ViewMode mode, float aspect) {
@@ -87,4 +90,4 @@ glm::mat4 GetProjectionMatrixFor(ViewMode mode, float aspect) {
 glm::mat4 GetViewMatrix() { return GetViewMatrixFor(viewMode); }
 glm::mat4 GetProjectionMatrix(float aspect) { return GetProjectionMatrixFor(viewMode, aspect); }
 
-glm::vec3 GetPlanePosition() { return PLANE_POS; }
+glm::vec3 GetPlanePosition() { return GetAirplanePosition(); }
