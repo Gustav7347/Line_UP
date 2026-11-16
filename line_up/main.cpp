@@ -33,11 +33,25 @@ int main() {
     InitTitle(); // 타이틀 이미지 로드
     glfwSetKeyCallback(window, key_callback);
 
+    double previousTime = glfwGetTime();
     while (!glfwWindowShouldClose(window)) {
         if (IsTitleActive()) DrawTitle(); // Enter 누르기 전: 타이틀 화면
         else DrawScene();                 // Enter 누른 후: 게임 화면
-        glfwSwapBuffers(window);
         glfwPollEvents();
+        double currentTime = glfwGetTime();
+        float deltaTime = static_cast<float>(currentTime - previousTime);
+        previousTime = currentTime;
+
+        UpdateAirplane(deltaTime,
+            glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS);
+
+        DrawScene();
+        glfwSwapBuffers(window);
     }
 
     glfwDestroyWindow(window);

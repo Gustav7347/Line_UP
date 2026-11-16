@@ -127,6 +127,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     switch (key) {
     case GLFW_KEY_Q: glfwSetWindowShouldClose(window, GLFW_TRUE); break;
     default: CameraHandleKey(key); break; // V, P, R, +/-, ←/→ 는 camera.cpp에서 처리
+    case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, GLFW_TRUE); break;
+    case GLFW_KEY_SPACE: StartAirplaneEngine(); break;
+    case GLFW_KEY_P: isPerspective = !isPerspective; break;
+    case GLFW_KEY_R:
+        isPerspective = true;
+        cameraAngleY = 45.0f;
+        cameraRadius = 8.0f;
+        break;
+    case GLFW_KEY_EQUAL:
+        cameraRadius -= 0.5f;
+        if (cameraRadius < 2.0f) cameraRadius = 2.0f;
+        break;
+    case GLFW_KEY_MINUS:
+        cameraRadius += 0.5f;
+        if (cameraRadius > 30.0f) cameraRadius = 30.0f;
+        break;
+    case GLFW_KEY_LEFT:  cameraAngleY -= 3.0f; break;
+    case GLFW_KEY_RIGHT: cameraAngleY += 3.0f; break;
     }
 }
 
@@ -157,6 +175,24 @@ void DrawScene() {
     if (width <= 0 || height <= 0) return; // 최소화 상태
     float aspect = (float)width / (float)height;
     glViewport(0, 0, width, height);
+    // --- 카메라: 비행기 위치를 바라보며 Y축 기준으로 공전 ---
+    float radY = glm::radians(cameraAngleY);
+    float pitch = glm::radians(30.0f);
+    glm::vec3 target = GetAirplanePosition();
+    glm::vec3 cameraOffset(
+        cameraRadius * sin(radY) * cos(pitch),
+        cameraRadius * sin(pitch),
+        cameraRadius * cos(radY) * cos(pitch));
+    glm::mat4 view = glm::lookAt(target + cameraOffset, target, glm::vec3(0.0f, 1.0f, 0.0f));
+
+    glm::mat4 projection;
+    if (isPerspective) {
+        projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+    }
+    else {
+        float s = cameraRadius * 0.4f;
+        projection = glm::ortho(-s, s, -s, s, 0.1f, 100.0f);
+    }
 
     glm::mat4 viewProj = GetProjectionMatrix(aspect) * GetViewMatrix();
     DrawWorld(viewProj, transformLoc);
