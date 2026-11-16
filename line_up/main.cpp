@@ -22,10 +22,23 @@ int main() {
     InitAxis();
     glfwSetKeyCallback(window, key_callback);
 
+    double previousTime = glfwGetTime();
     while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+        double currentTime = glfwGetTime();
+        float deltaTime = static_cast<float>(currentTime - previousTime);
+        previousTime = currentTime;
+
+        UpdateAirplane(deltaTime,
+            glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS);
+
         DrawScene();
         glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
     glfwDestroyWindow(window);
