@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="airplane">
+      <UniqueIdentifier>{f5eb8b7d-18f7-4bd9-b5b0-767d06ffc729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="airplane\헤더 파일">
+      <UniqueIdentifier>{c57c95cb-8f9c-464d-98d4-1222db5a6e79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HUD">
+      <UniqueIdentifier>{878bdb41-cca5-4b42-82eb-875cae5f0a00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="map">
+      <UniqueIdentifier>{cc6a7e40-f996-46a1-a4c6-07c11f4a71dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="obstacle">
+      <UniqueIdentifier>{657b28db-26eb-4b5a-ab28-c5871f9f84c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound">
+      <UniqueIdentifier>{fc13403d-4d1f-4a03-b818-801aeb1ad996}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HUD\헤더 파일">
+      <UniqueIdentifier>{2273c09a-7e74-4751-9025-9fc10a70f73b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="airplane\소스 파일">
+      <UniqueIdentifier>{ac4b8277-c4b0-4a03-ae80-8c93f18dc4b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HUD\소스 파일">
+      <UniqueIdentifier>{5b81f562-7a5f-4c8b-91d9-08cf2cb872e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="map\헤더 파일">
+      <UniqueIdentifier>{de2df6d3-9e6d-497e-9979-a2a325233872}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="map\소스 파일">
+      <UniqueIdentifier>{cd4dc9af-ab03-454a-b2fc-5dc3c784f7be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound\헤더 파일">
+      <UniqueIdentifier>{0ac3face-a491-4682-9756-ebc6269e42de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound\소스 파일">
+      <UniqueIdentifier>{4888f1ab-b240-4e59-a615-2159de4aeccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="obstacle\헤더 파일">
+      <UniqueIdentifier>{b85576e8-d67c-49d1-ab4d-ae3f2c0878d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="obstacle\소스 파일">
+      <UniqueIdentifier>{7ef969ed-4ffa-44f1-aa40-f1f0d5c2d98d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{2af51db9-f0a2-458a-943a-6cbc77c1869a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\헤더 파일">
+      <UniqueIdentifier>{e998b91f-8fda-43c0-83cf-b609404f5e04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\소스 파일">
+      <UniqueIdentifier>{93bfa4a5-9237-4eae-9639-83a4840d7452}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="airplane\airplane.cpp">
+      <Filter>airplane\소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD\hud.cpp">
+      <Filter>HUD\소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="map\map.cpp">
+      <Filter>map\소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\sound.cpp">
+      <Filter>sound\소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="obstacle\obstacle.cpp">
+      <Filter>obstacle\소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="render\render.cpp">
+      <Filter>render\소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="airplane\airplane.h">
+      <Filter>airplane\헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD\hud.h">
+      <Filter>HUD\헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="map\map.h">
+      <Filter>map\헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="sound\sound.h">
+      <Filter>sound\헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="obstacle\obstacle.h">
+      <Filter>obstacle\헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="render\render.h">
+      <Filter>render\헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
