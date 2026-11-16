@@ -1,12 +1,21 @@
 #include "airplane.h"
+#include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 // 이 파일 안에서만 쓰는 변수 (static)
 static GLuint cubeVAO, cubeVBO[2]; // 0: 위치, 1: 색상
+static glm::vec3 airplanePosition(0.0f);
+static float headingAngle = 0.0f;
+static float rollAngle = 0.0f;
+static bool engineStarted = false;
 
 // 직육면체 크기 (가로 X, 높이 Y, 깊이 Z)
 static const glm::vec3 BOX_SIZE = glm::vec3(2.0f, 1.0f, 3.0f);
+static const float FLIGHT_SPEED = 3.0f;
+static const float TURN_SPEED = 90.0f;
+static const float ROLL_SPEED = 180.0f;
+static const float ALTITUDE_SPEED = 3.0f;
 
 // 단위 육면체 (-0.5 ~ 0.5), 면당 삼각형 2개 = 6정점, 총 36정점
 static const float cubeVertices[] = {
@@ -68,11 +77,33 @@ void InitAirplane() {
 }
 
 void DrawAirplane(const glm::mat4& viewProj, GLuint transformLoc) {
-    // 원점(0,0,0)에 직육면체 하나
-    glm::mat4 model = glm::scale(glm::mat4(1.0f), BOX_SIZE);
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), airplanePosition);
+    model = glm::rotate(model, glm::radians(headingAngle), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(rollAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::scale(model, BOX_SIZE);
     glm::mat4 mvp = viewProj * model;
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+void StartAirplaneEngine() {
+    engineStarted = true;
+}
+
+void UpdateAirplane(float deltaTime, bool ascend, bool descend,
+    bool turnLeft, bool turnRight, bool rollLeft, bool rollRight) {
+    headingAngle += (static_cast<int>(turnRight) - static_cast<int>(turnLeft)) * TURN_SPEED * deltaTime;
+    rollAngle += (static_cast<int>(rollRight) - static_cast<int>(rollLeft)) * ROLL_SPEED * deltaTime;
+    airplanePosition.y += (static_cast<int>(ascend) - static_cast<int>(descend)) * ALTITUDE_SPEED * deltaTime;
+
+    if (engineStarted) {
+        float headingRadians = glm::radians(headingAngle);
+        airplanePosition += glm::vec3(std::sin(headingRadians), 0.0f, std::cos(headingRadians)) * FLIGHT_SPEED * deltaTime;
+    }
+}
+
+glm::vec3 GetAirplanePosition() {
+    return airplanePosition;
 }

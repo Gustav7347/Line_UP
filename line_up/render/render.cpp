@@ -119,7 +119,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (action != GLFW_PRESS && action != GLFW_REPEAT) return;
 
     switch (key) {
-    case GLFW_KEY_Q: glfwSetWindowShouldClose(window, GLFW_TRUE); break;
+    case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, GLFW_TRUE); break;
+    case GLFW_KEY_SPACE: StartAirplaneEngine(); break;
     case GLFW_KEY_P: isPerspective = !isPerspective; break;
     case GLFW_KEY_R:
         isPerspective = true;
@@ -148,14 +149,15 @@ void DrawScene() {
     glUseProgram(shaderProgramID);
     GLuint transformLoc = glGetUniformLocation(shaderProgramID, "transform");
 
-    // --- 카메라: 원점을 바라보며 Y축 기준으로 공전 ---
+    // --- 카메라: 비행기 위치를 바라보며 Y축 기준으로 공전 ---
     float radY = glm::radians(cameraAngleY);
     float pitch = glm::radians(30.0f);
-    glm::vec3 cameraPos = glm::vec3(
+    glm::vec3 target = GetAirplanePosition();
+    glm::vec3 cameraOffset(
         cameraRadius * sin(radY) * cos(pitch),
         cameraRadius * sin(pitch),
         cameraRadius * cos(radY) * cos(pitch));
-    glm::mat4 view = glm::lookAt(cameraPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 view = glm::lookAt(target + cameraOffset, target, glm::vec3(0.0f, 1.0f, 0.0f));
 
     glm::mat4 projection;
     if (isPerspective) {
