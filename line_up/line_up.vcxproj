@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)external\glm;$(ProjectDir)airplane;$(ProjectDir)render;$(ProjectDir)HUD;$(ProjectDir)map;$(ProjectDir)obstacle;$(ProjectDir)sound;$(ProjectDir)camera;$(ProjectDir)viewport;$(ProjectDir)title;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\glm;$(ProjectDir)airplane;$(ProjectDir)render;$(ProjectDir)HUD;$(ProjectDir)map;$(ProjectDir)obstacle;$(ProjectDir)sound;$(ProjectDir)camera;$(ProjectDir)viewport;$(ProjectDir)title;$(ProjectDir)airport;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +133,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)external\glm;$(ProjectDir)airplane;$(ProjectDir)render;$(ProjectDir)HUD;$(ProjectDir)map;$(ProjectDir)obstacle;$(ProjectDir)sound;$(ProjectDir)camera;$(ProjectDir)viewport;$(ProjectDir)title;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\glm;$(ProjectDir)airplane;$(ProjectDir)render;$(ProjectDir)HUD;$(ProjectDir)map;$(ProjectDir)obstacle;$(ProjectDir)sound;$(ProjectDir)camera;$(ProjectDir)viewport;$(ProjectDir)title;$(ProjectDir)airport;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="airplane\airplane.cpp" />
+    <ClCompile Include="airport\airport.cpp" />
     <ClCompile Include="camera\camera.cpp" />
     <ClCompile Include="HUD\hud.cpp" />
     <ClCompile Include="main.cpp" />
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="airplane\airplane.h" />
+    <ClInclude Include="airport\airport.h" />
     <ClInclude Include="camera\camera.h" />
     <ClInclude Include="HUD\hud.h" />
     <ClInclude Include="map\map.h" />

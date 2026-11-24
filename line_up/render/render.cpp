@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "viewport.h"
 #include "title.h"
+#include "airport.h"
 
 #include <iostream>
 #include <fstream>
@@ -133,6 +134,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 // 장면 그리기
 
+// 좌표축 + 공항 + 비행기를 주어진 카메라로 그림
 // 주어진 카메라로 맵, 좌표축, 비행기를 그림
 void DrawWorld(const glm::mat4& viewProj, GLuint transformLoc) {
     DrawMap(viewProj, transformLoc);
@@ -140,6 +142,9 @@ void DrawWorld(const glm::mat4& viewProj, GLuint transformLoc) {
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(viewProj));
     glBindVertexArray(axisVAO);
     glDrawArrays(GL_LINES, 0, axisVertexCount);
+
+    // --- 출발 공항 (airport.cpp) ---
+    DrawAirport(viewProj, transformLoc);
 
     // --- 비행기(직육면체) ---
     DrawAirplane(viewProj, transformLoc);

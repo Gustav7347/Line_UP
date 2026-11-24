@@ -11,3 +11,4 @@ void UpdateAirplane(float deltaTime, bool ascend, bool descend,
 glm::vec3 GetAirplanePosition();
 glm::vec3 GetAirplaneForward();
 glm::vec3 GetAirplaneUp();
+float GetAirplanePitch(); // W/S 기울기 (도, + = 기수 들림)
