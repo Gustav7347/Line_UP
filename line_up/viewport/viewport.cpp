@@ -1,6 +1,7 @@
 #include "viewport.h"
 #include "render.h"
 #include "camera.h"
+#include "map.h"
 
 #include <vector>
 #include <cmath>
@@ -134,7 +135,7 @@ void DrawMinimap(int width, int height, GLuint transformLoc) {
     // 정사각형 뷰포트 전체가 ±(MAP_RANGE / innerR) → 안쪽 원 반지름이 MAP_RANGE
     float s = MAP_RANGE / innerR;
     glm::mat4 proj = glm::ortho(-s, s, -s, s, 0.1f, center.y + 100.0f);
-    DrawWorld(proj * view, transformLoc);
+    DrawWorld(proj * view, transformLoc, false);
 
     glStencilMask(0xFF);
     glDisable(GL_STENCIL_TEST);
