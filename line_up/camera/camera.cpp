@@ -13,7 +13,7 @@ static bool  isPerspective = true;  // P: 원근/직각 투영 전환 (3인칭�
 static float orbitAngle = 0.0f;     // ←/→: 비행기 주위 회전 (0 = 비행기 바로 뒤)
 static const float DEFAULT_RADIUS = 20.0f; // 3인칭 기본 거리 (클수록 카메라가 뒤로)
 static float cameraRadius = DEFAULT_RADIUS; // +/-: 비행기와의 거리
-static const float ORBIT_PITCH = 25.0f; // 위에서 내려다보는 각도 (클수록 카메라가 높아짐)
+static const float ORBIT_PITCH = 15.0f; // 비행기 뒤에서 하늘과 활주로가 함께 보이는 각도
 static constexpr float WORLD_VIEW_DISTANCE = 3200.0f;
 
 // --- 1인칭: 조종석 위치 (비행기 로컬 좌표) ---
@@ -87,7 +87,7 @@ glm::mat4 GetProjectionMatrixFor(ViewMode mode, float aspect) {
         return glm::perspective(glm::radians(60.0f), aspect, 0.05f, WORLD_VIEW_DISTANCE);
 
     if (isPerspective)
-        return glm::perspective(glm::radians(45.0f), aspect, 0.1f, WORLD_VIEW_DISTANCE);
+        return glm::perspective(glm::radians(55.0f), aspect, 0.1f, WORLD_VIEW_DISTANCE);
 
     float s = cameraRadius * 0.4f;
     return glm::ortho(-s * aspect, s * aspect, -s, s, 0.1f, WORLD_VIEW_DISTANCE);
