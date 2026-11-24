@@ -4,6 +4,7 @@
 #include "render.h"
 #include "airplane.h"
 #include "title.h"
+#include "airport.h"
 
 int main() {
     if (!glfwInit()) return -1;
@@ -29,6 +30,7 @@ int main() {
 
     InitShader();
     InitAirplane();
+    InitAirport();  // 출발 공항 VAO 생성
     InitAxis();
     InitTitle(); // 타이틀 이미지 로드
     glfwSetKeyCallback(window, key_callback);

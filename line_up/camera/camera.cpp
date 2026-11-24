@@ -16,9 +16,9 @@ static float cameraRadius = DEFAULT_RADIUS; // +/-: 비행기와의 거리
 static const float ORBIT_PITCH = 25.0f; // 위에서 내려다보는 각도 (클수록 카메라가 높아짐)
 
 // --- 1인칭: 조종석 위치 (비행기 로컬 좌표) ---
-// 박스는 X ±1, Y ±0.5, Z ±1.5 → 윗면 바로 위, 앞쪽에 눈 위치를 둠
-// 그러면 화면 아래쪽에 비행기 앞부분(기수)이 살짝 보여서 "타고 있는" 느낌이 남
-static const glm::vec3 COCKPIT_EYE = glm::vec3(0.0f, 0.7f, 0.6f);
+// 비행기 모델 길이 15 기준: 동체 윗면 바로 위, 기수 쪽에 눈 위치를 둠
+// (예전 직육면체용 (0, 0.7, 0.6)은 동체 안쪽이라 화면이 가려짐)
+static const glm::vec3 COCKPIT_EYE = glm::vec3(0.0f, 2.1f, 6.0f);
 
 void ToggleViewMode() {
     viewMode = (viewMode == ViewMode::FirstPerson) ? ViewMode::ThirdPerson : ViewMode::FirstPerson;
@@ -57,6 +57,10 @@ glm::mat4 GetViewMatrixFor(ViewMode mode) {
     if (mode == ViewMode::FirstPerson) {
         glm::vec3 up = GetAirplaneUp();
         glm::vec3 right = glm::normalize(glm::cross(up, forward));
+        // W/S 기울기(피치)만큼 비행기 오른쪽 축을 기준으로 시선도 같이 들고 숙임
+        glm::mat4 pitchRot = glm::rotate(glm::mat4(1.0f), glm::radians(-GetAirplanePitch()), right);
+        forward = glm::vec3(pitchRot * glm::vec4(forward, 0.0f));
+        up = glm::vec3(pitchRot * glm::vec4(up, 0.0f));
         glm::vec3 eye = planePosition
             + right * COCKPIT_EYE.x
             + up * COCKPIT_EYE.y
@@ -64,14 +68,16 @@ glm::mat4 GetViewMatrixFor(ViewMode mode) {
         return glm::lookAt(eye, eye + forward, up);
     }
 
+    // 3인칭: 비행기의 위쪽(up)을 기준으로 카메라를 둠
+    // Q/E로 비행기가 좌우로 기울면(롤) up도 같이 기울어서 카메라도 함께 회전함
     float pitch = glm::radians(ORBIT_PITCH);
     float orbit = glm::radians(orbitAngle);
-    glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
-    glm::vec3 right = glm::normalize(glm::cross(worldUp, forward));
+    glm::vec3 up = GetAirplaneUp();
+    glm::vec3 right = glm::normalize(glm::cross(up, forward));
     glm::vec3 horizontal = -forward * std::cos(orbit) - right * std::sin(orbit);
     glm::vec3 offset = cameraRadius * (
-        horizontal * std::cos(pitch) + worldUp * std::sin(pitch));
-    return glm::lookAt(planePosition + offset, planePosition, worldUp);
+        horizontal * std::cos(pitch) + up * std::sin(pitch));
+    return glm::lookAt(planePosition + offset, planePosition, up);
 }
 
 glm::mat4 GetProjectionMatrixFor(ViewMode mode, float aspect) {
