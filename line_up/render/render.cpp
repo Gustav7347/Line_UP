@@ -1,5 +1,6 @@
 #include "render.h"
 #include "airplane.h"
+#include "map.h"
 #include "camera.h"
 #include "viewport.h"
 #include "title.h"
@@ -126,15 +127,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     switch (key) {
     case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, GLFW_TRUE); break;
-    case GLFW_KEY_SPACE: StartAirplaneEngine(); break;
     default: CameraHandleKey(key); break;
     }
 }
 
 // 장면 그리기
 
-// 좌표축 + 비행기를 주어진 카메라로 그림
+// 주어진 카메라로 맵, 좌표축, 비행기를 그림
 void DrawWorld(const glm::mat4& viewProj, GLuint transformLoc) {
+    DrawMap(viewProj, transformLoc);
     // --- 좌표축 (모델 변환 없음) ---
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(viewProj));
     glBindVertexArray(axisVAO);

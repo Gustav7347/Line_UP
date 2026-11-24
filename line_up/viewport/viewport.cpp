@@ -133,7 +133,7 @@ void DrawMinimap(int width, int height, GLuint transformLoc) {
     glm::mat4 view = glm::lookAt(center + glm::vec3(0.0f, 50.0f, 0.0f), center, glm::vec3(0.0f, 0.0f, 1.0f));
     // 정사각형 뷰포트 전체가 ±(MAP_RANGE / innerR) → 안쪽 원 반지름이 MAP_RANGE
     float s = MAP_RANGE / innerR;
-    glm::mat4 proj = glm::ortho(-s, s, -s, s, 0.1f, 100.0f);
+    glm::mat4 proj = glm::ortho(-s, s, -s, s, 0.1f, center.y + 100.0f);
     DrawWorld(proj * view, transformLoc);
 
     glStencilMask(0xFF);
