@@ -14,6 +14,7 @@ static float orbitAngle = 0.0f;     // ←/→: 비행기 주위 회전 (0 = 비
 static const float DEFAULT_RADIUS = 20.0f; // 3인칭 기본 거리 (클수록 카메라가 뒤로)
 static float cameraRadius = DEFAULT_RADIUS; // +/-: 비행기와의 거리
 static const float ORBIT_PITCH = 25.0f; // 위에서 내려다보는 각도 (클수록 카메라가 높아짐)
+static constexpr float WORLD_VIEW_DISTANCE = 3200.0f;
 
 // --- 1인칭: 조종석 위치 (비행기 로컬 좌표) ---
 // 박스는 X ±1, Y ±0.5, Z ±1.5 → 윗면 바로 위, 앞쪽에 눈 위치를 둠
@@ -77,13 +78,13 @@ glm::mat4 GetViewMatrixFor(ViewMode mode) {
 glm::mat4 GetProjectionMatrixFor(ViewMode mode, float aspect) {
     // 1인칭은 항상 원근 투영, near를 작게 해서 기수가 잘리지 않게 함
     if (mode == ViewMode::FirstPerson)
-        return glm::perspective(glm::radians(60.0f), aspect, 0.05f, 200.0f);
+        return glm::perspective(glm::radians(60.0f), aspect, 0.05f, WORLD_VIEW_DISTANCE);
 
     if (isPerspective)
-        return glm::perspective(glm::radians(45.0f), aspect, 0.1f, 200.0f);
+        return glm::perspective(glm::radians(45.0f), aspect, 0.1f, WORLD_VIEW_DISTANCE);
 
     float s = cameraRadius * 0.4f;
-    return glm::ortho(-s * aspect, s * aspect, -s, s, 0.1f, 200.0f);
+    return glm::ortho(-s * aspect, s * aspect, -s, s, 0.1f, WORLD_VIEW_DISTANCE);
 }
 
 // 현재 시점 모드 기준
