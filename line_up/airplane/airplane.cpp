@@ -1,12 +1,16 @@
 #include "airplane.h"
 #include "airport.h" // DrawAirlinerModel
+#include "map.h"
+#include <algorithm>
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 // 이 파일 안에서만 쓰는 변수 (static)
 static GLuint cubeVAO, cubeVBO[2]; // 0: 위치, 1: 색상
-static glm::vec3 airplanePosition(0.0f);
+// 직육면체 크기 (가로 X, 높이 Y, 깊이 Z)
+static const glm::vec3 BOX_SIZE(2.0f, 1.0f, 3.0f);
+static glm::vec3 airplanePosition(0.0f, GROUND_Y + BOX_SIZE.y * 0.5f, RUNWAY_START_Z + 3.0f);
 static float headingAngle = 0.0f;
 static float rollAngle = 0.0f;
 static float pitchAngle = 0.0f; // W/S: 기수 들기(+) / 숙이기(-), 보이는 기울기만
@@ -17,6 +21,11 @@ static const glm::vec3 BOX_SIZE = glm::vec3(2.0f, 1.0f, 3.0f);
 // 비행기 모델 길이 (기수~꼬리, 날개 폭도 같음). 공항에 서 있는 여객기는 30
 static const float PLANE_LENGTH = 15.0f;
 static const float FLIGHT_SPEED = 3.0f;
+static float flightSpeed = 0.0f;
+
+static const float MAX_FLIGHT_SPEED = 80.0f;
+static const float ACCELERATION = 20.0f;
+static const float BRAKE_DECELERATION = 35.0f;
 static const float TURN_SPEED = 90.0f;
 static const float ROLL_SPEED = 180.0f;
 static const float ALTITUDE_SPEED = 3.0f;
@@ -82,12 +91,21 @@ void InitAirplane() {
     glEnableVertexAttribArray(1);
 }
 
+static glm::mat4 AirplaneRotation() {
+    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(headingAngle), glm::vec3(0.0f, 1.0f, 0.0f));
+    return glm::rotate(rotation, glm::radians(rollAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
 void DrawAirplane(const glm::mat4& viewProj, GLuint transformLoc) {
     glm::mat4 model = glm::translate(glm::mat4(1.0f), airplanePosition);
     model = glm::rotate(model, glm::radians(headingAngle), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::rotate(model, glm::radians(rollAngle), glm::vec3(0.0f, 0.0f, 1.0f));
     // X축 기준 기울기: 앞쪽이 +Z라서 기수를 들려면 -각도로 회전
     model = glm::rotate(model, glm::radians(-pitchAngle), glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::mat4 translation = glm::translate(glm::mat4(1.0f), airplanePosition);
+    glm::mat4 model = translation * glm::scale(AirplaneRotation(), BOX_SIZE);
+    glm::mat4 mvp = viewProj * model;
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
     // 직육면체 대신 공항에 서 있는 여객기와 같은 모양으로 그림 (airport.cpp)
     // 바퀴 바닥 = 기존 직육면체 바닥(-BOX_SIZE.y / 2) 이라서 활주로 위에 그대로 서 있음
@@ -95,13 +113,10 @@ void DrawAirplane(const glm::mat4& viewProj, GLuint transformLoc) {
     DrawAirlinerModel(viewProj * model, transformLoc, PLANE_LENGTH);
 }
 
-void StartAirplaneEngine() {
-    engineStarted = true;
-}
-
 void UpdateAirplane(float deltaTime, bool ascend, bool descend,
-    bool turnLeft, bool turnRight, bool rollLeft, bool rollRight) {
-    headingAngle += (static_cast<int>(turnRight) - static_cast<int>(turnLeft)) * TURN_SPEED * deltaTime;
+    bool turnLeft, bool turnRight, bool rollLeft, bool rollRight,
+    bool accelerate, bool brake) {
+    headingAngle += (static_cast<int>(turnLeft) - static_cast<int>(turnRight)) * TURN_SPEED * deltaTime;
     rollAngle += (static_cast<int>(rollRight) - static_cast<int>(rollLeft)) * ROLL_SPEED * deltaTime;
     airplanePosition.y += (static_cast<int>(ascend) - static_cast<int>(descend)) * ALTITUDE_SPEED * deltaTime;
 
@@ -113,7 +128,33 @@ void UpdateAirplane(float deltaTime, bool ascend, bool descend,
 
     if (engineStarted) {
         airplanePosition += GetAirplaneForward() * FLIGHT_SPEED * deltaTime;
+    headingAngle = std::remainder(headingAngle, 360.0f);
+    rollAngle = std::remainder(rollAngle, 360.0f);
+
+    if (brake) flightSpeed = std::max(0.0f, flightSpeed - BRAKE_DECELERATION * deltaTime);
+    else if (accelerate) flightSpeed = std::min(MAX_FLIGHT_SPEED, flightSpeed + ACCELERATION * deltaTime);
+
+    // 회전한 직육면체의 월드 축 기준 반폭과 반높이
+    glm::mat4 rotation = AirplaneRotation();
+    glm::vec3 halfSize = BOX_SIZE * 0.5f;
+    glm::vec3 extent = glm::abs(glm::vec3(rotation[0])) * halfSize.x
+        + glm::abs(glm::vec3(rotation[1])) * halfSize.y
+        + glm::abs(glm::vec3(rotation[2])) * halfSize.z;
+    const float minX = -FLIGHT_HALF_WIDTH + extent.x;
+    const float maxX = FLIGHT_HALF_WIDTH - extent.x;
+    airplanePosition.x = std::clamp(airplanePosition.x, minX, maxX);
+
+    glm::vec3 travel = GetAirplaneForward() * flightSpeed * deltaTime;
+    const float nextX = airplanePosition.x + travel.x;
+    if ((travel.x > 0.0f && nextX >= maxX) || (travel.x < 0.0f && nextX <= minX)) {
+        const float wallX = travel.x > 0.0f ? maxX : minX;
+        travel *= (wallX - airplanePosition.x) / travel.x;
+        flightSpeed = 0.0f;
     }
+    airplanePosition += travel;
+    airplanePosition.x = std::clamp(airplanePosition.x, minX, maxX);
+    const float climb = (static_cast<int>(ascend) - static_cast<int>(descend)) * ALTITUDE_SPEED * deltaTime;
+    airplanePosition.y = std::max(GROUND_Y + extent.y, airplanePosition.y + climb);
 }
 
 glm::vec3 GetAirplanePosition() {

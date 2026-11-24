@@ -1,8 +1,10 @@
 #include <GL/glew.h>
 #include <GL/glfw3.h>
+#include <algorithm>
 
 #include "render.h"
 #include "airplane.h"
+#include "map.h"
 #include "title.h"
 #include "airport.h"
 
@@ -32,6 +34,7 @@ int main() {
     InitAirplane();
     InitAirport();  // 출발 공항 VAO 생성
     InitAxis();
+    InitMap();
     InitTitle(); // 타이틀 이미지 로드
     glfwSetKeyCallback(window, key_callback);
 
@@ -39,7 +42,7 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         double currentTime = glfwGetTime();
-        float deltaTime = static_cast<float>(currentTime - previousTime);
+        float deltaTime = std::min(static_cast<float>(currentTime - previousTime), 0.05f);
         previousTime = currentTime;
 
         if (IsTitleActive()) {
@@ -52,7 +55,10 @@ int main() {
                 glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS,
                 glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS,
                 glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS,
-                glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS);
+                glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS,
+                glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS,
+                glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
+                glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS);
             DrawScene();
         }
 
