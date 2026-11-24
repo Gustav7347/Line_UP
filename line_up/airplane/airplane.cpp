@@ -16,8 +16,6 @@ static float rollAngle = 0.0f;
 static float pitchAngle = 0.0f; // W/S: 기수 들기(+) / 숙이기(-), 보이는 기울기만
 static bool engineStarted = false;
 
-// 직육면체 크기 (가로 X, 높이 Y, 깊이 Z)
-static const glm::vec3 BOX_SIZE = glm::vec3(2.0f, 1.0f, 3.0f);
 // 비행기 모델 길이 (기수~꼬리, 날개 폭도 같음). 공항에 서 있는 여객기는 30
 static const float PLANE_LENGTH = 15.0f;
 static const float FLIGHT_SPEED = 3.0f;
@@ -102,8 +100,6 @@ void DrawAirplane(const glm::mat4& viewProj, GLuint transformLoc) {
     model = glm::rotate(model, glm::radians(rollAngle), glm::vec3(0.0f, 0.0f, 1.0f));
     // X축 기준 기울기: 앞쪽이 +Z라서 기수를 들려면 -각도로 회전
     model = glm::rotate(model, glm::radians(-pitchAngle), glm::vec3(1.0f, 0.0f, 0.0f));
-    glm::mat4 translation = glm::translate(glm::mat4(1.0f), airplanePosition);
-    glm::mat4 model = translation * glm::scale(AirplaneRotation(), BOX_SIZE);
     glm::mat4 mvp = viewProj * model;
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
@@ -118,7 +114,6 @@ void UpdateAirplane(float deltaTime, bool ascend, bool descend,
     bool accelerate, bool brake) {
     headingAngle += (static_cast<int>(turnLeft) - static_cast<int>(turnRight)) * TURN_SPEED * deltaTime;
     rollAngle += (static_cast<int>(rollRight) - static_cast<int>(rollLeft)) * ROLL_SPEED * deltaTime;
-    airplanePosition.y += (static_cast<int>(ascend) - static_cast<int>(descend)) * ALTITUDE_SPEED * deltaTime;
 
     // W: 기수를 들고, S: 기수를 숙이고, 손을 떼면 다시 수평으로 천천히 돌아옴
     float targetPitch = (static_cast<int>(ascend) - static_cast<int>(descend)) * MAX_PITCH;
@@ -126,8 +121,6 @@ void UpdateAirplane(float deltaTime, bool ascend, bool descend,
     if (pitchAngle < targetPitch) pitchAngle = std::fmin(pitchAngle + pitchStep, targetPitch);
     else if (pitchAngle > targetPitch) pitchAngle = std::fmax(pitchAngle - pitchStep, targetPitch);
 
-    if (engineStarted) {
-        airplanePosition += GetAirplaneForward() * FLIGHT_SPEED * deltaTime;
     headingAngle = std::remainder(headingAngle, 360.0f);
     rollAngle = std::remainder(rollAngle, 360.0f);
 
